@@ -74,10 +74,12 @@ cc_library_shared {
     ],
 
     product_variables: {
-        uses_generic_camera_parameter_library: {
-            srcs: [
-                "CameraParameters.cpp",
-            ],
+        custom: {
+            uses_generic_camera_parameter_library: {
+                srcs: [
+                    "CameraParameters.cpp",
+                ],
+            },
         },
     },
     defaults: ["camera_parameters_defaults"],
