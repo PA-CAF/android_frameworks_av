@@ -582,6 +582,15 @@ static VideoFrame *extractVideoFrame(
         }
     } while (err == OK && !done);
 
+    if (err != OK || size <= 0 || outputFormat == NULL) {
+        ALOGE("Failed to decode thumbnail frame");
+        source->stop();
+        decoder->release();
+        return NULL;
+    }
+
+    ALOGV("successfully decoded video frame.");
+
     if (thumbNailTime >= 0) {
         if (timeUs != thumbNailTime && outputFormat != NULL) {
             AString mime;
