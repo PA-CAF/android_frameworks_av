@@ -171,6 +171,9 @@ public:
     virtual status_t getMasterMono(bool *mono) = 0;
     virtual float    getStreamVolumeDB(
             audio_stream_type_t stream, int index, audio_devices_t device) = 0;
+
+    virtual status_t listAudioSessions(audio_stream_type_t streams,
+                                       Vector< sp<AudioSessionInfo>> &sessions) = 0;
 };
 
 
@@ -185,6 +188,8 @@ public:
                                     uint32_t flags = 0);
 private:
     void sanetizeAudioAttributes(audio_attributes_t* attr);
+    status_t sanitizeEffectDescriptor(effect_descriptor_t* desc);
+    status_t sanitizeAudioPortConfig(struct audio_port_config* config);
 };
 
 // ----------------------------------------------------------------------------
