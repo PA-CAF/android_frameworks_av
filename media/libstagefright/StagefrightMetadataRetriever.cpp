@@ -502,13 +502,18 @@ static VideoFrame *extractVideoFrame(
                     ALOGV("Timed-out waiting for output.. retries left = %zu", retriesLeft);
                     err = OK;
                 } else if (err == OK) {
+	            if (outputFormat == NULL) {
+                        decoder->releaseOutputBuffer(index);
+                        err = ERROR_MALFORMED;
+                        break;
+                    }
+
                     // If we're seeking with CLOSEST option and obtained a valid targetTimeUs
                     // from the extractor, decode to the specified frame. Otherwise we're done.
                     ALOGV("Received an output buffer, timeUs=%lld", (long long)timeUs);
                     sp<MediaCodecBuffer> videoFrameBuffer = outputBuffers.itemAt(index);
 
-                    int32_t width, height, stride, slice_height;
-                    CHECK(outputFormat != NULL);
+                    int32_t width, height;
                     CHECK(outputFormat->findInt32("width", &width));
                     CHECK(outputFormat->findInt32("height", &height));
                     CHECK(outputFormat->findInt32("stride", &stride));
@@ -554,7 +559,7 @@ static VideoFrame *extractVideoFrame(
                         if (converter.isValid()) {
                             err = converter.convert(
                                     (const uint8_t *)videoFrameBuffer->data(),
-                                    stride, slice_height,
+                                    width, height,
                                     crop_left, crop_top, crop_right, crop_bottom,
                                     frame->mData,
                                     frame->mWidth,
